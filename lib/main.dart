@@ -62,6 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -77,11 +78,15 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           ElevatedButton(
-              onPressed: (){},
+              onPressed: (){
+                appEngine.setNumber(1);
+              },
               child: Text("Home")
           ),
           ElevatedButton(
-              onPressed: (){},
+              onPressed: (){
+                appEngine.setNumber(0);
+              },
               child: Text("App")
           ),
           ElevatedButton(
@@ -121,61 +126,77 @@ class _MyHomePageState extends State<MyHomePage> {
             Container(
               height: 450,
               width: 450,
-              child: Table(
-                border: TableBorder.all(),
-                children: [
-                  TableRow(children: [
-                    Box(
-                        numbers:[1,2,3,4,5,6,7,8,9],
-                        editable:[false,false,true,false,false,false,false,false,false],
-                        highlight:[false,false,false,false,false,false,false,false,false]
-                    ),
-                    Box(
-                        numbers:[4,5,6,1,2,3,7,8,9],
-                        editable:[false,false,false,false,false,true,false,false,false],
-                        highlight:[false,false,false,false,false,false,false,false,false]
-                    ),
-                    Box(
-                        numbers:[1,2,3,7,8,9,4,5,6],
-                        editable:[false,false,false,false,true,false,false,false,false],
-                        highlight:[false,false,false,false,false,false,false,false,false]
-                    )
-                  ]),
-                  TableRow(children: [
-                    Box(
-                        numbers:[0,2,3,4,5,6,7,8,9],
-                        editable:[true,false,false,false,false,false,false,false,false],
-                        highlight:[false,false,false,false,false,false,false,false,false]
-                    ),
-                    Box(
-                        numbers:[4,5,6,1,2,3,7,8,9],
-                        editable:[false,false,false,false,true,false,false,false,false],
-                        highlight:[false,false,false,false,false,false,false,false,false]
-                    ),
-                    Box(
-                        numbers:[1,2,3,7,8,9,4,5,6],
-                        editable:[false,false,true,false,false,false,false,false,true],
-                        highlight:[false,false,false,false,false,false,false,false,false]
-                    )
-                  ]),
-                  TableRow(children: [
-                    Box(
-                        numbers:[1,2,3,4,5,6,7,8,9],
-                        editable:[false,false,false,false,false,false,true,false,false],
-                        highlight:[false,false,false,false,false,false,false,false,false]
-                    ),
-                    Box(
-                        numbers:[4,5,6,1,2,3,7,8,9],
-                        editable:[false,false,false,true,false,false,false,false,false],
-                        highlight:[false,false,false,false,false,false,false,false,false]
-                    ),
-                    Box(
-                        numbers:[1,2,3,7,8,9,4,5,6],
-                        editable:[false,true,false,false,false,false,true,false,false],
-                        highlight:[false,false,false,false,false,false,false,false,false]
-                    )
-                  ]),
-                ]
+              child: StreamBuilder<int>(
+                stream: appEngine.sudokuBLoC.curSudoku,
+                builder: (context, AsyncSnapshot<int> snapshot) {
+                  List<List<int>> display = appEngine.currentSudoku.getBoxFormatGrid();
+                  List<List<bool>> editable = appEngine.problemSudoku.getZeros();
+                  return Table(
+                    border: TableBorder.all(),
+                    children: [
+                      TableRow(children: [
+                        Box(
+                            boxID: 0,
+                            numbers:display[0],
+                            editable:editable[0],
+                            highlight:[false,false,false,false,false,false,false,false,false]
+                        ),
+                        Box(
+                            boxID: 1,
+                            numbers:display[1],
+                            editable:editable[1],
+                            highlight:[false,false,false,false,false,false,false,false,false]
+                        ),
+                        Box(
+                            boxID: 2,
+                            numbers:display[2],
+                            editable:editable[2],
+                            highlight:[false,false,false,false,false,false,false,false,false]
+                        )
+                      ]),
+                      TableRow(children: [
+                        Box(
+                            boxID: 3,
+                            numbers:display[3],
+                            editable:editable[3],
+                            highlight:[false,false,false,false,false,false,false,false,false]
+                        ),
+                        Box(
+                            boxID: 4,
+                            numbers:display[4],
+                            editable:editable[4],
+                            highlight:[false,false,false,false,false,false,false,false,false]
+                        ),
+                        Box(
+                            boxID: 5,
+                            numbers:display[5],
+                            editable:editable[5],
+                            highlight:[false,false,false,false,false,false,false,false,false]
+                        )
+                      ]),
+                      TableRow(children: [
+                        Box(
+                            boxID: 6,
+                            numbers:display[6],
+                            editable:editable[6],
+                            highlight:[false,false,false,false,false,false,false,false,false]
+                        ),
+                        Box(
+                            boxID: 7,
+                            numbers:display[7],
+                            editable:editable[7],
+                            highlight:[false,false,false,false,false,false,false,false,false]
+                        ),
+                        Box(
+                            boxID: 8,
+                            numbers:display[8],
+                            editable:editable[8],
+                            highlight:[false,false,false,false,false,false,false,false,false]
+                        )
+                      ]),
+                    ]
+                  );
+                }
               )
             )
           ],
@@ -192,8 +213,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 class Number extends StatelessWidget {
-  const Number({Key? key, required this.number, required this.highlight, required this.editable}) : super(key: key);
+  const Number({Key? key, required this.numberID, required this.number, required this.highlight, required this.editable}) : super(key: key);
 
+  final int numberID;
   final int number;
   final bool highlight;
   final bool editable;
@@ -208,7 +230,15 @@ class Number extends StatelessWidget {
         Colors.transparent,
       child: (editable)?
           ElevatedButton(
-              onPressed: (){},
+              style: ButtonStyle(
+                  backgroundColor: (appEngine.selectedNumberID==numberID)?
+                    MaterialStateProperty.all(Colors.blue[800]):
+                    MaterialStateProperty.all(Colors.blue)
+              ),
+              onPressed: (){
+                appEngine.selectedNumberID = numberID;
+                print("Number $numberID has been selected");
+              },
               child: (number == 0)?
                 Container()
                   :
@@ -221,8 +251,9 @@ class Number extends StatelessWidget {
 }
 
 class Box extends StatelessWidget {
-  const Box({Key? key, required this.numbers, required this.highlight, required this.editable}) : super(key: key);
+  const Box({Key? key, required this.boxID, required this.numbers, required this.highlight, required this.editable}) : super(key: key);
 
+  final int boxID;
   final List<int> numbers;
   final List<bool> highlight;
   final List<bool> editable;
@@ -236,19 +267,45 @@ class Box extends StatelessWidget {
         border: TableBorder.all(),
         children: [
           TableRow(children:[
-            Number(number: numbers[0], editable: editable[0], highlight: highlight[0]),
-            Number(number: numbers[1], editable: editable[1], highlight: highlight[1]),
-            Number(number: numbers[2], editable: editable[2], highlight: highlight[2]),
+            Number(
+                numberID: (((boxID%3)*3) + ((boxID/3).truncate()*27)),
+                number: numbers[0], editable: editable[0], highlight: highlight[0]),
+            Number(
+                numberID: 1 + (((boxID%3)*3) + ((boxID/3).truncate()*27)),
+                number: numbers[1], editable: editable[1], highlight: highlight[1]
+            ),
+            Number(
+                numberID: 2 + (((boxID%3)*3) + ((boxID/3).truncate()*27)),
+                number: numbers[2], editable: editable[2], highlight: highlight[2]
+            ),
           ]),
           TableRow(children:[
-            Number(number: numbers[3], editable: editable[3], highlight: highlight[3]),
-            Number(number: numbers[4], editable: editable[4], highlight: highlight[4]),
-            Number(number: numbers[5], editable: editable[5], highlight: highlight[5]),
+            Number(
+                numberID: 9 + (((boxID%3)*3) + ((boxID/3).truncate()*27)),
+                number: numbers[3], editable: editable[3], highlight: highlight[3]
+            ),
+            Number(
+                numberID: 10 + (((boxID%3)*3) + ((boxID/3).truncate()*27)),
+                number: numbers[4], editable: editable[4], highlight: highlight[4]
+            ),
+            Number(
+                numberID: 11 + (((boxID%3)*3) + ((boxID/3).truncate()*27)),
+                number: numbers[5], editable: editable[5], highlight: highlight[5]
+            ),
           ]),
           TableRow(children:[
-            Number(number: numbers[6], editable: editable[6], highlight: highlight[6]),
-            Number(number: numbers[7], editable: editable[7], highlight: highlight[7]),
-            Number(number: numbers[8], editable: editable[8], highlight: highlight[8]),
+            Number(
+                numberID: 18 + (((boxID%3)*3) + ((boxID/3).truncate()*27)),
+                number: numbers[6], editable: editable[6], highlight: highlight[6]
+            ),
+            Number(
+                numberID: 19 + (((boxID%3)*3) + ((boxID/3).truncate()*27)),
+                number: numbers[7], editable: editable[7], highlight: highlight[7]
+            ),
+            Number(
+                numberID: 20 + (((boxID%3)*3) + ((boxID/3).truncate()*27)),
+                number: numbers[8], editable: editable[8], highlight: highlight[8]
+            ),
           ]),
         ]
       )
