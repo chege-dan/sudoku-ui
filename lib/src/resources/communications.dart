@@ -8,35 +8,56 @@ import 'dart:convert';
 
 import 'dart:io';
 
-late RawDatagramSocket udp;
-
-void onData (RawSocketEvent event) {
-  print("Socket event.");
-  if (event == RawSocketEvent.read) {
-    Datagram? rcv = udp.receive();
-    print("Received data: " + ascii.decode(rcv!.data));
+void main() async {
+  packetHandler test = packetHandler();
+  await test.initializeIp(57194);
+  await Future.delayed(Duration(seconds: 1));
+  while (true) {
+    await test.sendData();
   }
 }
 
-void main () async {
-  final int port = 57194;
-  udp = await RawDatagramSocket.bind(InternetAddress.anyIPv4, port);
+class packetHandler {
+  int portNumber = 57194;
+  String? destIpString;
+  late RawDatagramSocket
+      socketConnection; //the socket connection that will be carrying out the udp message sending
+  void onData(RawSocketEvent event) {
+    // and event handler for when a packet is received
+    print("socket event");
+    if (event == RawSocketEvent.read) {
+      Datagram? rcv = socketConnection.receive();
+      print("Received data" + ascii.decode(rcv!.data));
+    }
+  }
 
-  udp.listen(onData);
+  packetHandler();
 
-  print ("The socket is connected to: ${udp.address}:" + udp.port.toString());
-  List<NetworkInterface> ni = await NetworkInterface.list();
-  print ("The internet address is: ${ni[0].addresses[0].address}");
+  Future<void> initializeIp(int number) async {
+    this.socketConnection =
+        await RawDatagramSocket.bind(InternetAddress.anyIPv4, number);
+    print('got here $this.socketConnection');
+    this.portNumber = number;
 
-  print("Enter the IP address of the socket to connect to (The same port {$port} will be used): ");
-  String? destIpString = stdin.readLineSync();
+    this.socketConnection.listen(this.onData);
+    print("The socket is connected to: ${socketConnection.address}:" +
+        this.socketConnection.port.toString());
+    List<NetworkInterface> ni = await NetworkInterface.list();
+    print("The internet address is: ${ni[0].addresses[0].address}");
 
-  while(true) {
-    print("Enter the string to be sent to [$destIpString:$port]: ");
+    print(
+        "Enter the IP address of the socket to connect to (The same port ${this.portNumber} will be used): ");
+    this.destIpString = stdin.readLineSync();
+  }
+
+  Future<void> sendData() async {
+    print(
+        "Enter the string to be sent to [${this.destIpString}:${this.portNumber}]: ");
+
     String? stringToSend = stdin.readLineSync();
     List<int> buffer = ascii.encode(stringToSend!);
-    InternetAddress destAddress = InternetAddress(destIpString!);
-    udp.send(buffer, destAddress, port);
+    InternetAddress destAddress = InternetAddress(this.destIpString!);
+    socketConnection.send(buffer, destAddress, this.portNumber);
     print("The string has been sent.");
     //We need a delay to allow the main thread with input to hand over control of the terminal
     //  to the listen thread so that it can output to console
