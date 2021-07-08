@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_crypto/src/resources/engine.dart';
+
+AppEngine appEngine = AppEngine();
 
 void main() {
   runApp(MyApp());
@@ -72,6 +75,21 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: [
+          ElevatedButton(
+              onPressed: (){},
+              child: Text("Home")
+          ),
+          ElevatedButton(
+              onPressed: (){},
+              child: Text("App")
+          ),
+          ElevatedButton(
+              onPressed: (){},
+              child: Text("Database")
+          ),
+          SizedBox(width: 50)
+        ],
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -100,6 +118,66 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            Container(
+              height: 450,
+              width: 450,
+              child: Table(
+                border: TableBorder.all(),
+                children: [
+                  TableRow(children: [
+                    Box(
+                        numbers:[1,2,3,4,5,6,7,8,9],
+                        editable:[false,false,true,false,false,false,false,false,false],
+                        highlight:[false,false,false,false,false,false,false,false,false]
+                    ),
+                    Box(
+                        numbers:[4,5,6,1,2,3,7,8,9],
+                        editable:[false,false,false,false,false,true,false,false,false],
+                        highlight:[false,false,false,false,false,false,false,false,false]
+                    ),
+                    Box(
+                        numbers:[1,2,3,7,8,9,4,5,6],
+                        editable:[false,false,false,false,true,false,false,false,false],
+                        highlight:[false,false,false,false,false,false,false,false,false]
+                    )
+                  ]),
+                  TableRow(children: [
+                    Box(
+                        numbers:[0,2,3,4,5,6,7,8,9],
+                        editable:[true,false,false,false,false,false,false,false,false],
+                        highlight:[false,false,false,false,false,false,false,false,false]
+                    ),
+                    Box(
+                        numbers:[4,5,6,1,2,3,7,8,9],
+                        editable:[false,false,false,false,true,false,false,false,false],
+                        highlight:[false,false,false,false,false,false,false,false,false]
+                    ),
+                    Box(
+                        numbers:[1,2,3,7,8,9,4,5,6],
+                        editable:[false,false,true,false,false,false,false,false,true],
+                        highlight:[false,false,false,false,false,false,false,false,false]
+                    )
+                  ]),
+                  TableRow(children: [
+                    Box(
+                        numbers:[1,2,3,4,5,6,7,8,9],
+                        editable:[false,false,false,false,false,false,true,false,false],
+                        highlight:[false,false,false,false,false,false,false,false,false]
+                    ),
+                    Box(
+                        numbers:[4,5,6,1,2,3,7,8,9],
+                        editable:[false,false,false,true,false,false,false,false,false],
+                        highlight:[false,false,false,false,false,false,false,false,false]
+                    ),
+                    Box(
+                        numbers:[1,2,3,7,8,9,4,5,6],
+                        editable:[false,true,false,false,false,false,true,false,false],
+                        highlight:[false,false,false,false,false,false,false,false,false]
+                    )
+                  ]),
+                ]
+              )
+            )
           ],
         ),
       ),
@@ -111,3 +189,70 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+
+class Number extends StatelessWidget {
+  const Number({Key? key, required this.number, required this.highlight, required this.editable}) : super(key: key);
+
+  final int number;
+  final bool highlight;
+  final bool editable;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      width: 50,
+      color: (highlight)?
+        Colors.lightBlueAccent:
+        Colors.transparent,
+      child: (editable)?
+          ElevatedButton(
+              onPressed: (){},
+              child: (number == 0)?
+                Container()
+                  :
+                Center(child: Text(number.toString()))
+          )
+          :
+          Center(child: Text(number.toString()))
+    );
+  }
+}
+
+class Box extends StatelessWidget {
+  const Box({Key? key, required this.numbers, required this.highlight, required this.editable}) : super(key: key);
+
+  final List<int> numbers;
+  final List<bool> highlight;
+  final List<bool> editable;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150,
+      width: 150,
+      child: Table(
+        border: TableBorder.all(),
+        children: [
+          TableRow(children:[
+            Number(number: numbers[0], editable: editable[0], highlight: highlight[0]),
+            Number(number: numbers[1], editable: editable[1], highlight: highlight[1]),
+            Number(number: numbers[2], editable: editable[2], highlight: highlight[2]),
+          ]),
+          TableRow(children:[
+            Number(number: numbers[3], editable: editable[3], highlight: highlight[3]),
+            Number(number: numbers[4], editable: editable[4], highlight: highlight[4]),
+            Number(number: numbers[5], editable: editable[5], highlight: highlight[5]),
+          ]),
+          TableRow(children:[
+            Number(number: numbers[6], editable: editable[6], highlight: highlight[6]),
+            Number(number: numbers[7], editable: editable[7], highlight: highlight[7]),
+            Number(number: numbers[8], editable: editable[8], highlight: highlight[8]),
+          ]),
+        ]
+      )
+    );
+  }
+}
+

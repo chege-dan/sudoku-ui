@@ -6,7 +6,7 @@ class Sudoku{
 
   //TODO: Add the extra properties for the sudoku
 
-  Sudoku() {
+  Sudoku({this.sudokuID}) {
     //Initializer for the class
 
   }
