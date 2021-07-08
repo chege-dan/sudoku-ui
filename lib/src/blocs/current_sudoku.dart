@@ -1,32 +1,41 @@
 import 'dart:async';
 
-import 'package:sudoku_crypto/src/models/sudoku.dart';
+class SudokuBLoC {
 
-class CurrentSudokuBLoC {
-  Sudoku sudoku = Sudoku();
+  //When a new problem sudoku is received, an arbitrary int can be pushed into
+  //  this stream controller to tell the UI to update
+  final StreamController<int> _problemSudokuController = StreamController<int>();
+  //When the user updates their solution, an arbitrary int can be pushed into
+  //  this stream controller to tell the UI to update
+  final StreamController<int> _currentSudokuController = StreamController<int>();
 
-  //Communications will call functions that will push the latest sudoku to the sink
-  final StreamController<Sudoku> _currentSudokuController = StreamController<Sudoku>();
+  //UI elements will listen to the stream to know when the problem sudoku has changed
+  late Stream<int> probSudoku;
+  //UI elements will listen to the stream to know when the current sudoku has changed
+  late Stream<int> curSudoku;
 
-  //UI elements will listen to the stream to get the latest sudoku
-  late Stream<Sudoku> outSudoku;
-
-  CurrentSudokuBLoC() {
+  SudokuBLoC() {
     //Initializer of the class
-    outSudoku = _currentSudokuController.stream;
+    probSudoku = _problemSudokuController.stream;
+    curSudoku = _currentSudokuController.stream;
   }
 
   void dispose(){
     //Deconstructor of the class
-    //closing socket so that we can prevent memory leaks
+    //closing sockets so that we can prevent memory leaks
+    _problemSudokuController.close();
     _currentSudokuController.close();
   }
 
-  void newSudoku (List<int> data){
-    //When a new sudoku is received from the server
+  void newSudoku () {
+    //When a new problem sudoku is received from the server
+    //Adding an arbitrary integer to the stream controller
+    _problemSudokuController.add(1);
+  }
 
-    //TODO: Write code for generating the sudoku from the data received
-
-    _currentSudokuController.add(sudoku);
+  void updatedSudoku () {
+    //When the user updates their sudoku solution
+    //Adding an arbitrary integer to the stream controller
+    _currentSudokuController.add(1);
   }
 }
