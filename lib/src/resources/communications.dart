@@ -10,7 +10,7 @@ import 'dart:io';
 
 late RawDatagramSocket udp;
 
-void onData (RawSocketEvent event) {
+void onData(RawSocketEvent event) {
   print("Socket event.");
   if (event == RawSocketEvent.read) {
     Datagram? rcv = udp.receive();
@@ -18,25 +18,54 @@ void onData (RawSocketEvent event) {
   }
 }
 
-void main () async {
-  final int port = 57194;
-  udp = await RawDatagramSocket.bind(InternetAddress.anyIPv4, port);
+void main() async {
+  packetHandler test = packetHandler();
+  await test.initializeIp(57194);
+  await Future.delayed(Duration(seconds: 1));
+  while (true) {
+    await test.sendData();
+  }
+}
 
-  udp.listen(onData);
+class packetHandler {
+  int portNumber = 57194;
+  String? destIpString;
+  late RawDatagramSocket
+      socketConnection; //the socket connection that will be carrying out the udp message sending
+  void onData(RawSocketEvent event) {
+    // and event handler for when a packet is received
+    print("socket event");
+    if (event == RawSocketEvent.read) {
+      Datagram? rcv = socketConnection.receive();
+      print("Received data" + ascii.decode(rcv!.data));
+    }
+  }
 
-  print ("The socket is connected to: ${udp.address}:" + udp.port.toString());
-  List<NetworkInterface> ni = await NetworkInterface.list();
-  print ("The internet address is: ${ni[0].addresses[0].address}");
+  packetHandler() {}
 
-  print("Enter the IP address of the socket to connect to (The same port {$port} will be used): ");
-  String? destIpString = stdin.readLineSync();
+  Future<void> initializeIp(int number) async {
+    this.socketConnection =
+        await RawDatagramSocket.bind(InternetAddress.anyIPv4, number);
+    print('got here $this.socketConnection');
+    this.portNumber = number;
 
-  while(true) {
-    print("Enter the string to be sent to [$destIpString:$port]: ");
+    socketConnection.listen(this.onData);
+    print("The socket is connected to: ${socketConnection.address}:" +
+        socketConnection.port.toString());
+    List<NetworkInterface> ni = await NetworkInterface.list();
+    print("The internet address is: ${ni[0].addresses[0].address}");
+
+    print(
+        "Enter the IP address of the socket to connect to (The same port {$portNumber} will be used): ");
+    destIpString = stdin.readLineSync();
+  }
+
+  Future<void> sendData() async {
+    print("Enter the string to be sent to [$destIpString:$portNumber]: ");
     String? stringToSend = stdin.readLineSync();
     List<int> buffer = ascii.encode(stringToSend!);
     InternetAddress destAddress = InternetAddress(destIpString!);
-    udp.send(buffer, destAddress, port);
+    socketConnection.send(buffer, destAddress, portNumber);
     print("The string has been sent.");
     //We need a delay to allow the main thread with input to hand over control of the terminal
     //  to the listen thread so that it can output to console
