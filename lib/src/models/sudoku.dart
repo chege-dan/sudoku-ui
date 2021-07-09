@@ -66,8 +66,8 @@ class Sudoku {
       return false;
     }
     data.sort();
-    for (var x = 1; x <= 9; ++x) {
-      if (data[x - 1] != x) {
+    for (var x = 0; x < 9; ++x) {
+      if (data[x] != x + 1) {
         return false;
       }
     }
@@ -76,7 +76,11 @@ class Sudoku {
 
   bool checkRows() {
     for (int i = 0; i < 9; ++i) {
-      if (!checkSectionCorrectness(this.grid[i])) {
+      List<int> currow = [];
+      for (int j = 0; j < 9; ++j) {
+        currow.add(this.grid[i][j]);
+      }
+      if (!checkSectionCorrectness(currow)) {
         return false;
       }
     }
@@ -101,7 +105,7 @@ class Sudoku {
       for (int j = 0; j < 9; j += 3) {
         List<int> box = [];
         for (int x = i; x < i + 3; ++x) {
-          for (int y = j; y < y + 3; ++y) {
+          for (int y = j; y < j + 3; ++y) {
             box.add(this.grid[x][y]);
           }
         }
