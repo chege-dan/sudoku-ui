@@ -6,10 +6,11 @@ import 'package:sudoku_crypto/src/resources/communications.dart';
 /*
   sending data using the packet handler class:
   test.send
-*/ */
+*/
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io'
+import 'dart:io';
+
 //Main class that will be globally accessible
 class AppEngine {
   //To hold all the database data
@@ -37,7 +38,7 @@ class AppEngine {
         //TODO CONFIRM SUDOKUS ARE THE SAME ; ACCESS A STRING REPRESENTATIOON OF THE SUDOKU
         //RECEIVED USING COMMAND pcktreceived.sudoku;
 
-      } else if(pcktreceived.type == "2"){
+      } else if (pcktreceived.type == "2") {
         //someone has completed the sudoku and won
         //TODO Update the database
         //access the person who solved with pcktreceived.solver the old sudoku id is pckreceive.id
