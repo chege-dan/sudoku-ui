@@ -1,13 +1,14 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:sudoku_crypto/src/resources/engine.dart';
 
 AppEngine appEngine = AppEngine();
 
 void main() {
+  appEngine.initializeAppEngine();
   runApp(MyApp());
 }
+
+double number_side = 10;
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -68,6 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    number_side = (MediaQuery.of(context).orientation == Orientation.portrait)?
+        MediaQuery.of(context).size.width/12: MediaQuery.of(context).size.height/15;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -116,8 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 // style: Theme.of(context).textTheme.headline4,
                 ),
             Container(
-                height: 450,
-                width: 450,
+                height: number_side*9,
+                width: number_side*9,
                 child: StreamBuilder<int>(
                     stream: appEngine.sudokuBLoC.curSudoku,
                     builder: (context, AsyncSnapshot<int> snapshot) {
@@ -269,52 +272,115 @@ class _MyHomePageState extends State<MyHomePage> {
                         ]),
                       ]);
                     })),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              ElevatedButton(
-                  onPressed: () {
-                    appEngine.setNumber(1);
-                  },
-                  child: Text("1")),
-              ElevatedButton(
-                  onPressed: () {
-                    appEngine.setNumber(2);
-                  },
-                  child: Text("2")),
-              ElevatedButton(
-                  onPressed: () {
-                    appEngine.setNumber(3);
-                  },
-                  child: Text("3")),
-              ElevatedButton(
-                  onPressed: () {
-                    appEngine.setNumber(4);
-                  },
-                  child: Text("4")),
-              ElevatedButton(
-                  onPressed: () {
-                    appEngine.setNumber(5);
-                  },
-                  child: Text("5")),
-              ElevatedButton(
-                  onPressed: () {
-                    appEngine.setNumber(6);
-                  },
-                  child: Text("6")),
-              ElevatedButton(
-                  onPressed: () {
-                    appEngine.setNumber(7);
-                  },
-                  child: Text("7")),
-              ElevatedButton(
-                  onPressed: () {
-                    appEngine.setNumber(8);
-                  },
-                  child: Text("8")),
-              ElevatedButton(
-                  onPressed: () {
-                    appEngine.setNumber(9);
-                  },
-                  child: Text("9")),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Container(
+                height: number_side * 1.1,
+                width: number_side * 1.1,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    onPressed: () {
+                      appEngine.setNumber(1);
+                    },
+                    child: Text("1")),
+              ),
+              Container(
+                height: number_side * 1.1,
+                width: number_side * 1.1,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    onPressed: () {
+                      appEngine.setNumber(2);
+                    },
+                    child: Text("2")),
+              ),
+              Container(
+                height: number_side * 1.1,
+                width: number_side * 1.1,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    onPressed: () {
+                      appEngine.setNumber(3);
+                    },
+                    child: Text("3")),
+              ),
+              Container(
+                height: number_side * 1.1,
+                width: number_side * 1.1,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    onPressed: () {
+                      appEngine.setNumber(4);
+                    },
+                    child: Text("4")),
+              ),
+              Container(
+                height: number_side * 1.1,
+                width: number_side * 1.1,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    onPressed: () {
+                      appEngine.setNumber(5);
+                    },
+                    child: Text("5")),
+              ),
+              Container(
+                height: number_side * 1.1,
+                width: number_side * 1.1,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    onPressed: () {
+                      appEngine.setNumber(6);
+                    },
+                    child: Text("6")),
+              ),
+              Container(
+                height: number_side * 1.1,
+                width: number_side * 1.1,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    onPressed: () {
+                      appEngine.setNumber(7);
+                    },
+                    child: Text("7")),
+              ),
+              Container(
+                height: number_side * 1.1,
+                width: number_side * 1.1,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    onPressed: () {
+                      appEngine.setNumber(8);
+                    },
+                    child: Text("8")),
+              ),
+              Container(
+                height: number_side * 1.1,
+                width: number_side * 1.1,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    onPressed: () {
+                      appEngine.setNumber(9);
+                    },
+                    child: Text("9")),
+              ),
             ])
           ],
         ),
@@ -346,15 +412,17 @@ class Number extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 50,
-        width: 50,
+        height: number_side,
+        width: number_side,
         color: (highlight) ? Colors.lightBlueAccent : Colors.transparent,
         child: (editable)
             ? ElevatedButton(
                 style: ButtonStyle(
+                    padding: MaterialStateProperty.all(EdgeInsets.zero),
                     backgroundColor: (appEngine.selectedNumberID == numberID)
                         ? MaterialStateProperty.all(Colors.blue[800])
-                        : MaterialStateProperty.all(Colors.blue)),
+                        : MaterialStateProperty.all(Colors.blue)
+                ),
                 onPressed: () {
                   appEngine.selectedNumberID = numberID;
                   print("Number $numberID has been selected");
@@ -383,8 +451,8 @@ class Box extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 150,
-        width: 150,
+        height: number_side*3,
+        width: number_side*3,
         child: Table(border: TableBorder.all(), children: [
           TableRow(children: [
             Number(

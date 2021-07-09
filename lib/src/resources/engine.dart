@@ -7,7 +7,6 @@ import 'package:sudoku_crypto/src/resources/communications.dart';
   sending data using the packet handler class:
   test.send
 */
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -24,9 +23,10 @@ class AppEngine {
     [6, 4, 5, 9, 7, 8, 3, 1, 2],
     [9, 7, 8, 3, 1, 2, 6, 4, 5]
   ];
+  String myName = "";
 
   //To hold all the database data
-  Database database = Database();
+  SudokuDatabase database = SudokuDatabase();
   //To hold the user's solution of the database
   Sudoku currentSudoku = Sudoku(sudokuID: 0, grid: testGrid);
   //To hold the original sudoku problem received from the server
@@ -37,23 +37,30 @@ class AppEngine {
   DatabaseStateBLoC databaseStateBLoC = DatabaseStateBLoC();
   //To communicate with the server
   //TODO: Make the communications class with all the required function members
-  late packetHandler test;
-  void onData(RawSocketEvent event) {
+  packetHandler comms = packetHandler();
+  void onData(RawSocketEvent event) async {
     // and event handler for when a packet is received
     print("socket event");
     if (event == RawSocketEvent.read) {
-      Datagram? rcv = test.socketConnection.receive();
+      Datagram? rcv = comms.socketConnection.receive();
       print("Received data" + ascii.decode(rcv!.data));
       packet_splitter pcktreceived = packet_splitter(ascii.decode(rcv.data));
       if (pcktreceived.type == "0") {
         //the MCU is updating the sudoku
         //TODO CONFIRM SUDOKUS ARE THE SAME ; ACCESS A STRING REPRESENTATIOON OF THE SUDOKU
         //RECEIVED USING COMMAND pcktreceived.sudoku;
-
+        currentSudoku = Sudoku(
+            sudokuID: pcktreceived.sudoku.hashCode,
+            grid: pcktreceived.sudokuTable);
       } else if (pcktreceived.type == "2") {
         //someone has completed the sudoku and won
         //TODO Update the database
         //access the person who solved with pcktreceived.solver the old sudoku id is pckreceive.id
+        await database.updateDatabase(
+            pcktreceived.sudoku.hashCode, pcktreceived.solver);
+      } else if (pcktreceived.type == "3") {
+        this.currentSudoku = Sudoku(
+            sudokuID: pcktreceived.hashCode, grid: pcktreceived.sudokuTable);
       }
     }
   }
@@ -76,6 +83,22 @@ class AppEngine {
     databaseStateBLoC.dispose();
   }
 
+  void initializeAppEngine () async {
+    await comms.initializeIp(5000);
+    comms.socketConnection.listen(onData);
+    await database.initializeDatabase();
+
+    List<Player> players = await database.players();
+    print (players.toString());
+  }
+
+  String encapsulateData() {
+    //encapsulate data to send
+    String pckt = "";
+    pckt = 1.toString() + currentSudoku.toString() + myName;
+    return pckt;
+  }
+
   void setNumber(int number) {
     int row = (selectedNumberID / 9).truncate();
     int column = selectedNumberID % 9;
@@ -89,9 +112,13 @@ class AppEngine {
     return false;
   }
 
-  bool checkSudokuCorrectness(Sudoku sudoku) {
+  bool check_SudokuCorrectness() {
     //TODO: Write code for checking if complete sudoku is correct
-
+    if (currentSudoku.checkSudokuCorrectness()) {
+      String pckt = encapsulateData();
+      comms.sendData(pckt);
+      return true;
+    }
     return false;
   }
 }
