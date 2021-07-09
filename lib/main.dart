@@ -312,4 +312,3 @@ class Box extends StatelessWidget {
     );
   }
 }
-
