@@ -109,12 +109,15 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-                'CONGRATULATIONS  if it is a one ,Otherwise use higher intution  '),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            // Text(
+            //    'CONGRATULATIONS  if it is a one ,Otherwise use higher intution  '),
+            Text((appEngine.currentSudoku.checkSudokuCorrectness())
+                    ? "CONGRAGULATIONS YOU HAVE HIGHER INTUTION"
+                    : "YOU ARE WRONG"
+                //   Text ('CONGRAGULATIONS YOU HAVE HIGHER INTUTION');
+                //'$_counter',
+                // style: Theme.of(context).textTheme.headline4,
+                ),
             Container(
                 height: number_side*9,
                 width: number_side*9,
