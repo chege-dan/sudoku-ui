@@ -24,15 +24,6 @@ class packetHandler {
   String? destIpString;
   late RawDatagramSocket
       socketConnection; //the socket connection that will be carrying out the udp message sending
-  String? onData(RawSocketEvent event) {
-    // and event handler for when a packet is received
-    print("socket event");
-    if (event == RawSocketEvent.read) {
-      Datagram? rcv = socketConnection.receive();
-      print("Received data" + ascii.decode(rcv!.data));
-      return ascii.decode(rcv.data);
-    }
-  }
 
   packetHandler();
 

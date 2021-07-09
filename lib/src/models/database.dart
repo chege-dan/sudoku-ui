@@ -36,7 +36,7 @@ class SudokuDatabase {
           'CREATE TABLE players(playerName VARCHAR[50] PRIMARY KEY, money INTEGER)',
         );
         await db.execute(
-          'CREATE TABLE logs(sudokuID INTEGER PRIMARY KEY, playerWhoSolved VARCHAR[50] FOREIGN KEY REFERENCES players(playerName), moneyAwarded INTEGER)',
+          'CREATE TABLE logs(sudokuID INTEGER PRIMARY KEY, playerWhoSolved VARCHAR[50], moneyAwarded INTEGER, CONSTRAINT fk_player  FOREIGN KEY (playerWhoSolved) REFERENCES players(playerName))',
         );
         for (int i = 0; i < 19; i++){
           insertPlayer(player[i]);

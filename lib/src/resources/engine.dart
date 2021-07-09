@@ -37,7 +37,7 @@ class AppEngine {
   DatabaseStateBLoC databaseStateBLoC = DatabaseStateBLoC();
   //To communicate with the server
   //TODO: Make the communications class with all the required function members
-  late packetHandler comms;
+  packetHandler comms = packetHandler();
   void onData(RawSocketEvent event) {
     // and event handler for when a packet is received
     print("socket event");
@@ -77,9 +77,12 @@ class AppEngine {
   }
 
   void initializeAppEngine () async {
-    comms.initializeIp(5000);
+    await comms.initializeIp(5000);
     comms.socketConnection.listen(onData);
-    database.initializeDatabase();
+    await database.initializeDatabase();
+
+    List<Player> players = await database.players();
+    print (players.toString());
   }
 
   void setNumber(int number) {
