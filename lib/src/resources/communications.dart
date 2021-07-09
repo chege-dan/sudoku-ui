@@ -12,15 +12,15 @@ void main() async {
   packetHandler test = packetHandler();
   String totest = "1123456432345543";
   packet_splitter test1 = packet_splitter(totest);
-  await test.initializeIp(57194);
+  await test.initializeIp(5000);
   await Future.delayed(Duration(seconds: 1));
   while (true) {
-    await test.sendData();
+    test.sendData("");
   }
 }
 
 class packetHandler {
-  int portNumber = 57194;
+  int portNumber = 5000;
   String? destIpString;
   late RawDatagramSocket
       socketConnection; //the socket connection that will be carrying out the udp message sending
@@ -48,21 +48,17 @@ class packetHandler {
 
     print(
         "Enter the IP address of the socket to connect to (The same port ${this.portNumber} will be used): ");
-    this.destIpString = stdin.readLineSync();
+    this.destIpString = "192.168.23.235";
   }
 
-  Future<void> sendData() async {
-    print(
-        "Enter the string to be sent to [${this.destIpString}:${this.portNumber}]: ");
-
-    String? stringToSend = stdin.readLineSync();
-    List<int> buffer = ascii.encode(stringToSend!);
+  void sendData(String stringToSend) {
+    List<int> buffer = ascii.encode(stringToSend);
     InternetAddress destAddress = InternetAddress(this.destIpString!);
     socketConnection.send(buffer, destAddress, this.portNumber);
     print("The string has been sent.");
     //We need a delay to allow the main thread with input to hand over control of the terminal
     //  to the listen thread so that it can output to console
-    await Future.delayed(Duration(seconds: 1));
+    //await Future.delayed(Duration(seconds: 1));
   }
 }
 

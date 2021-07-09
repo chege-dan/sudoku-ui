@@ -4,6 +4,7 @@ import 'package:sudoku_crypto/src/resources/engine.dart';
 AppEngine appEngine = AppEngine();
 
 void main() {
+  appEngine.initializeAppEngine();
   runApp(MyApp());
 }
 

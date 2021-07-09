@@ -26,7 +26,7 @@ class AppEngine {
   ];
 
   //To hold all the database data
-  Database database = Database();
+  SudokuDatabase database = SudokuDatabase();
   //To hold the user's solution of the database
   Sudoku currentSudoku = Sudoku(sudokuID: 0, grid: testGrid);
   //To hold the original sudoku problem received from the server
@@ -37,12 +37,12 @@ class AppEngine {
   DatabaseStateBLoC databaseStateBLoC = DatabaseStateBLoC();
   //To communicate with the server
   //TODO: Make the communications class with all the required function members
-  late packetHandler test;
+  late packetHandler comms;
   void onData(RawSocketEvent event) {
     // and event handler for when a packet is received
     print("socket event");
     if (event == RawSocketEvent.read) {
-      Datagram? rcv = test.socketConnection.receive();
+      Datagram? rcv = comms.socketConnection.receive();
       print("Received data" + ascii.decode(rcv!.data));
       packet_splitter pcktreceived = packet_splitter(ascii.decode(rcv.data));
       if (pcktreceived.type == "0") {
@@ -74,6 +74,12 @@ class AppEngine {
     //Deconstructor for the class
     sudokuBLoC.dispose();
     databaseStateBLoC.dispose();
+  }
+
+  void initializeAppEngine () async {
+    comms.initializeIp(5000);
+    comms.socketConnection.listen(onData);
+    database.initializeDatabase();
   }
 
   void setNumber(int number) {
