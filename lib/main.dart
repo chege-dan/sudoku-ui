@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:sudoku_crypto/src/resources/engine.dart';
 
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Sudoku Crypto'),
     );
   }
 }
@@ -78,20 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         actions: [
-          ElevatedButton(
-              onPressed: () {
-                appEngine.setNumber(9);
-              },
-              child: Text("Home")),
-          ElevatedButton(
-              onPressed: () {
-                appEngine.setNumber(0);
-              },
-              child: Text("App")),
-          ElevatedButton(onPressed: () {}, child: Text("Database")),
+          ElevatedButton(onPressed: () {}, child: Text("Create Profile")),
+          ElevatedButton(onPressed: () {}, child: Text("Check Coins")),
           SizedBox(width: 50)
         ],
       ),
+
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -113,8 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
-            ),
+                'CONGRATULATIONS  if it is a one ,Otherwise use higher intution  '),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
@@ -272,15 +265,63 @@ class _MyHomePageState extends State<MyHomePage> {
                               ])
                         ]),
                       ]);
-                    }))
+                    })),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              ElevatedButton(
+                  onPressed: () {
+                    appEngine.setNumber(1);
+                  },
+                  child: Text("1")),
+              ElevatedButton(
+                  onPressed: () {
+                    appEngine.setNumber(2);
+                  },
+                  child: Text("2")),
+              ElevatedButton(
+                  onPressed: () {
+                    appEngine.setNumber(3);
+                  },
+                  child: Text("3")),
+              ElevatedButton(
+                  onPressed: () {
+                    appEngine.setNumber(4);
+                  },
+                  child: Text("4")),
+              ElevatedButton(
+                  onPressed: () {
+                    appEngine.setNumber(5);
+                  },
+                  child: Text("5")),
+              ElevatedButton(
+                  onPressed: () {
+                    appEngine.setNumber(6);
+                  },
+                  child: Text("6")),
+              ElevatedButton(
+                  onPressed: () {
+                    appEngine.setNumber(7);
+                  },
+                  child: Text("7")),
+              ElevatedButton(
+                  onPressed: () {
+                    appEngine.setNumber(8);
+                  },
+                  child: Text("8")),
+              ElevatedButton(
+                  onPressed: () {
+                    appEngine.setNumber(9);
+                  },
+                  child: Text("9")),
+            ])
           ],
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          onPressed: _incrementCounter,
+          tooltip: 'Increment',
+          child: Icon(Icons
+              .check_circle)), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
