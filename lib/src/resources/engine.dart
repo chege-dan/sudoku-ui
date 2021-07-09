@@ -13,17 +13,16 @@ import 'dart:io';
 
 //Main class that will be globally accessible
 class AppEngine {
-
   static List<List<int>> testGrid = [
-    [1,2,3,0,5,6,0,8,9],
-    [1,0,3,4,5,6,0,8,9],
-    [1,2,3,4,0,6,7,8,0],
-    [1,0,3,0,5,6,0,8,9],
-    [1,2,3,0,5,6,0,8,9],
-    [0,2,3,4,0,6,7,0,9],
-    [1,0,3,4,5,0,7,8,9],
-    [1,2,3,0,0,6,7,0,9],
-    [1,0,3,0,5,6,0,8,9]
+    [1, 2, 3, 4, 5, 6, 7, 8, 0],
+    [4, 5, 6, 7, 8, 9, 1, 2, 3],
+    [7, 8, 9, 1, 2, 3, 4, 5, 6],
+    [2, 3, 1, 5, 6, 4, 8, 9, 7],
+    [5, 6, 4, 8, 9, 7, 2, 3, 1],
+    [8, 9, 7, 2, 3, 1, 5, 6, 4],
+    [3, 1, 2, 6, 4, 5, 9, 7, 8],
+    [6, 4, 5, 9, 7, 8, 3, 1, 2],
+    [9, 7, 8, 3, 1, 2, 6, 4, 5]
   ];
 
   //To hold all the database data
@@ -60,15 +59,15 @@ class AppEngine {
   }
 
   int _selectedNumberID = 0;
-  void set selectedNumberID (int s){
+  void set selectedNumberID(int s) {
     _selectedNumberID = s;
     sudokuBLoC.updatedSudoku();
   }
+
   int get selectedNumberID => _selectedNumberID;
 
   AppEngine() {
     //Initializer for the class
-
   }
 
   void dispose() {
@@ -78,8 +77,8 @@ class AppEngine {
   }
 
   void setNumber(int number) {
-    int row = (selectedNumberID/9).truncate();
-    int column = selectedNumberID%9;
+    int row = (selectedNumberID / 9).truncate();
+    int column = selectedNumberID % 9;
     this.currentSudoku.grid[row][column] = number;
     sudokuBLoC.updatedSudoku();
   }
