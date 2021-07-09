@@ -59,4 +59,70 @@ class Sudoku {
 
     return zeros;
   }
+
+  bool checkSectionCorrectness(List<int> data) {
+    //given either a row column or box check if it is complete and correct
+    if (data.length != 9) {
+      return false;
+    }
+    data.sort();
+    for (var x = 1; x <= 9; ++x) {
+      if (data[x - 1] != x) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool checkRows() {
+    for (int i = 0; i < 9; ++i) {
+      if (!checkSectionCorrectness(this.grid[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool checkColumns() {
+    for (int i = 0; i < 9; ++i) {
+      List<int> col = [];
+      for (int j = 0; j < 9; ++j) {
+        col.add(this.grid[j][i]);
+      }
+      if (!checkSectionCorrectness(col)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool checkBoxes() {
+    for (int i = 0; i < 9; i += 3) {
+      for (int j = 0; j < 9; j += 3) {
+        List<int> box = [];
+        for (int x = i; x < i + 3; ++x) {
+          for (int y = j; y < y + 3; ++y) {
+            box.add(this.grid[x][y]);
+          }
+        }
+        if (!checkSectionCorrectness(box)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  bool checkSudokuCorrectness() {
+    if (!this.checkRows()) {
+      return false;
+    }
+    if (!this.checkColumns()) {
+      return false;
+    }
+    if (!this.checkBoxes()) {
+      return false;
+    }
+    return true;
+  }
 }
