@@ -129,4 +129,14 @@ class Sudoku {
     }
     return true;
   }
+
+  String toString() {
+    String ans = "";
+    for (int i = 0; i < 9; ++i) {
+      for (int j = 0; j < 9; ++j) {
+        ans = ans + this.grid[i][j].toString();
+      }
+    }
+    return ans;
+  }
 }
