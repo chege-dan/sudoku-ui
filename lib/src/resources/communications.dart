@@ -30,7 +30,7 @@ class packetHandler {
     if (event == RawSocketEvent.read) {
       Datagram? rcv = socketConnection.receive();
       print("Received data" + ascii.decode(rcv!.data));
-      return ascii.decode(rcv!.data);
+      return ascii.decode(rcv.data);
     }
   }
 
