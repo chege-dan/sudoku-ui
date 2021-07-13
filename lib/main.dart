@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_crypto/src/blocs/current_sudoku.dart';
+import 'package:sudoku_crypto/src/models/database.dart';
 import 'package:sudoku_crypto/src/resources/engine.dart';
 
 AppEngine appEngine = AppEngine();
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Sudoku Crypto',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,10 +30,75 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Sudoku Crypto'),
+      home: LogInPage(),
     );
   }
 }
+
+class LogInPage extends StatefulWidget {
+  const LogInPage({Key? key}) : super(key: key);
+
+  @override
+  _LogInPageState createState() => _LogInPageState();
+}
+
+class _LogInPageState extends State<LogInPage> {
+
+  final _formKey = GlobalKey<FormState>();
+  String playerName = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Sudoku Crypto Log In")),
+      body: Form(
+        key: _formKey,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("User Name"),
+              SizedBox(height: 20),
+              TextFormField(
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  playerName = value;
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      // If the form is valid, display a snackbar. In the real world,
+                      // you'd often call a server or save the information in a database.
+                      Player? user = await appEngine.database.getPlayer(playerName);
+                      if (user == null) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(
+                            SnackBar(content: Text("User does not exist, Please input a correct user name.")));
+                        return;
+                      }
+                      appEngine.myName = playerName;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyHomePage(title: 'Sudoku Crypto')),
+                      );
+                    }
+                  },
+                  child: Text("Log in")
+              )
+            ]
+          )
+        )
+      ),
+    );
+  }
+}
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -53,6 +120,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+
+  @override
+  void initState() {
+    appEngine.sudokuBLoC = SudokuBLoC();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    appEngine.sudokuBLoC.dispose();
+    super.dispose();
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -83,7 +162,6 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         actions: [
-          ElevatedButton(onPressed: () {}, child: Text("Create Profile")),
           ElevatedButton(onPressed: () {}, child: Text("Check Coins")),
           SizedBox(width: 50)
         ],
@@ -112,22 +190,20 @@ class _MyHomePageState extends State<MyHomePage> {
             // Text(
             //    'CONGRATULATIONS  if it is a one ,Otherwise use higher intution  '),
             Text((appEngine.currentSudoku.checkSudokuCorrectness())
-                    ? "CONGRAGULATIONS YOU HAVE HIGHER INTUTION"
+                    ? "CONGRATULATIONS YOU HAVE HIGHER INTUITION"
                     : "YOU ARE WRONG"
-                //   Text ('CONGRAGULATIONS YOU HAVE HIGHER INTUTION');
-                //'$_counter',
-                // style: Theme.of(context).textTheme.headline4,
                 ),
+            SizedBox(height: 5),
             Container(
                 height: number_side*9,
                 width: number_side*9,
                 child: StreamBuilder<int>(
                     stream: appEngine.sudokuBLoC.curSudoku,
                     builder: (context, AsyncSnapshot<int> snapshot) {
-                      List<List<int>> display =
-                          appEngine.currentSudoku.getBoxFormatGrid();
                       List<List<bool>> editable =
                           appEngine.problemSudoku.getZeros();
+                      List<List<int>> display =
+                          appEngine.currentSudoku.getBoxFormatGrid();
                       return Table(border: TableBorder.all(), children: [
                         TableRow(children: [
                           Box(
@@ -271,7 +347,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               ])
                         ]),
                       ]);
-                    })),
+                    }
+                )
+            ),
+            SizedBox(height: 5),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Container(
                 height: number_side * 1.1,
@@ -387,7 +466,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       floatingActionButton: FloatingActionButton(
-          onPressed: _incrementCounter,
+          onPressed: (){appEngine.check_SudokuCorrectness();setState((){});},
           tooltip: 'Increment',
           child: Icon(Icons
               .check_circle)), // This trailing comma makes auto-formatting nicer for build methods.
