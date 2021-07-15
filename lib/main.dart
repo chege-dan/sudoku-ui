@@ -460,6 +460,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: Text("9")),
               ),
+               Container(
+                height: number_side * 1.1,
+                width: number_side * 1.1,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    ),
+                    onPressed: () {
+                      appEngine.setNumber(0);
+                    },
+                    child: Text("Undo")),
+              ),
             ])
           ],
         ),
